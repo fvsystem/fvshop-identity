@@ -1,0 +1,72 @@
+{
+  "name": "node-typescript-template",
+  "version": "0.0.1",
+  "description": "Template for typescript node",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "export": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/cjs/index.d.ts",
+      "import": "./dist/esm/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "pretest": "tsc --noEmit",
+    "test": "jest",
+    "prepublish": "npm run build",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs && tscpaths -p tsconfig.json -s ./src -o ./dist/cjs",
+    "build:esm": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/esm",
+    "commit": "cz",
+    "dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register src/@root/utils/index.ts' -e ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fvsystem/cache-template.git"
+  },
+  "author": "Lucas Rego",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fvsystem/node-typescript-template/issues"
+  },
+  "homepage": "https://github.com/fvsystem/node-typescript-template#readme",
+  "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.3.22",
+    "@swc/jest": "^0.2.24",
+    "@types/jest": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "commitizen": "latest",
+    "cz-conventional-changelog": "latest",
+    "eslint": "latest",
+    "eslint-config-airbnb-base": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-import-resolver-typescript": "latest",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-prettier": "latest",
+    "husky": "latest",
+    "jest": "latest",
+    "nodemon": "latest",
+    "prettier": "latest",
+    "ts-jest": "latest",
+    "ts-node": "latest",
+    "tsconfig-paths": "^4.1.1",
+    "tscpaths": "^0.0.9",
+    "typescript": "latest"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

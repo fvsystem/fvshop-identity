@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@root/*": [
+        "./*"
+      ],
+      "@root": [
+        "./index.ts"
+      ]
+    },
+    "incremental": true,
+    "target": "es2020",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "allowJs": true,
+    "declaration": true,
+    "outDir": "./dist/esm",
+    "baseUrl": "src",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false
+  },
+  "include": [
+    "src"
+  ]
+}
