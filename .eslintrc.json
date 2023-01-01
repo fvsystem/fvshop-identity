@@ -22,6 +22,11 @@
     ],
     "rules": {
         "prettier/prettier": "error",
+        "import/prefer-default-export": "off",
+        "no-useless-constructor": "off",
+        "class-methods-use-this": "off",
+        "consistent-return": "off",
+        "import/no-cycle": "off",
         "import/extensions": [
             "error",
             "ignorePackages",

@@ -18,6 +18,7 @@ module.exports = {
       useESM: true,
     },
   },
+  coverageDirectory: '../coverage',
   extensionsToTreatAsEsm: ['.ts'],
   collectCoverage: true,
   coverageThreshold: {
