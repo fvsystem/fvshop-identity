@@ -1,5 +1,5 @@
 import { EntityValidationError } from '@fvsystem/fvshop-shared-entities';
-import { IdentityUserFactory } from './identity-user.factory';
+import { CredentialFactory } from './credential.factory';
 
 const compareMock = jest.fn();
 const hashMock = jest.fn();
@@ -9,27 +9,28 @@ const hashServiceMock = {
   hash: hashMock,
 };
 
-describe('IdentityUserFactory', () => {
+describe('CredentialUserFactory', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   it('should create a valid user', async () => {
     hashMock.mockResolvedValue('jfhdksjfdsjkfhdskjfhdsjkfhfh');
-    const userIdentity = await IdentityUserFactory.create(
-      { email: 'test@test.com', password: 'passValid4' },
+    const userCredential = await CredentialFactory.create(
+      { email: 'test@test.com', password: 'passValid4', userId: '123' },
       hashServiceMock
     );
-    expect(userIdentity).toBeDefined();
-    expect(userIdentity.email).toBe('test@test.com');
-    expect(userIdentity.passwordHashed).toBe('jfhdksjfdsjkfhdskjfhdsjkfhfh');
+    expect(userCredential).toBeDefined();
+    expect(userCredential.email).toBe('test@test.com');
+    expect(userCredential.passwordHashed).toBe('jfhdksjfdsjkfhdskjfhdsjkfhfh');
+    expect(userCredential.id).toBe('123');
   });
 
   it('should throw an error when email is invalid', async () => {
     hashMock.mockResolvedValue('jfhdksjfdsjkfhdskjfhdsjkfhfh');
     expect(
-      IdentityUserFactory.create(
-        { email: 's', password: 'passValid4' },
+      CredentialFactory.create(
+        { email: 's', password: 'passValid4', userId: '123' },
         hashServiceMock
       )
     ).rejects.toThrowError(EntityValidationError);
@@ -38,8 +39,8 @@ describe('IdentityUserFactory', () => {
   it('should throw an error when password is invalid', async () => {
     hashMock.mockResolvedValue('jfhdksjfdsjkfhdskjfhdsjkfhfh');
     expect(
-      IdentityUserFactory.create(
-        { email: 'test@test.com', password: 'rer' },
+      CredentialFactory.create(
+        { email: 'test@test.com', password: 'rer', userId: '123' },
         hashServiceMock
       )
     ).rejects.toThrowError(EntityValidationError);

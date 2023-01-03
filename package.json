@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-template",
+  "name": "@fvsystem/fvshop-identity",
   "version": "0.0.1",
-  "description": "Template for typescript node",
+  "description": "Credential manager for FVShop",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -72,8 +72,8 @@
     }
   },
   "dependencies": {
-    "@fvsystem/fvshop-shared-entities": "^0.1.12",
-    "@fvsystem/fvshop-user-manager": "^0.1.10",
+    "@fvsystem/fvshop-shared-entities": "^0.1.16",
+    "@fvsystem/fvshop-user-manager": "^0.1.11",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.0",
     "uuid": "^9.0.0",

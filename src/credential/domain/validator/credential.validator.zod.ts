@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { ValidatorFieldsZod } from '@fvsystem/fvshop-shared-entities';
-import { IdentityUserEntity } from '../entity/identity.user';
+import { CredentialProps } from '../entity';
 
-export class IdentityUserValidatorZod extends ValidatorFieldsZod<
-  Omit<IdentityUserEntity, 'password'>
+export class CredentialValidatorZod extends ValidatorFieldsZod<
+  Omit<CredentialProps, 'password'>
 > {
   constructor() {
     super();

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ValidatorFieldsZod } from '@fvsystem/fvshop-shared-entities';
-import { IdentityProps } from '../entity';
+import { CredentialProps } from '../entity';
 
-export class PasswordValidatorZod extends ValidatorFieldsZod<IdentityProps> {
+export class PasswordValidatorZod extends ValidatorFieldsZod<CredentialProps> {
   constructor() {
     super();
     this.schema = z.object({

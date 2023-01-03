@@ -3,3 +3,4 @@ export * from './validator';
 export * from './value-object';
 export * from './service';
 export * from './error';
+export * from './repository';
