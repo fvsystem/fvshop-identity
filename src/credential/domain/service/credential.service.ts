@@ -33,7 +33,11 @@ export interface ValidateCredentialOutput {
 export class CredentialService {
   constructor(
     private readonly hashService: HashServiceInterface,
-    private readonly jwtService: JWTServicesInterface
+    private readonly jwtService: JWTServicesInterface<{
+      email: string;
+      userId: string;
+      scope: string[];
+    }>
   ) {}
 
   async createCredential(

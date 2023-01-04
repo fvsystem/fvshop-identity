@@ -1,7 +1,10 @@
 import { EntityValidationError } from '@fvsystem/fvshop-shared-entities';
+import { v4 as uuid } from 'uuid';
 import { CredentialFactory } from '../entity';
 import { InvalidPasswordError } from '../error';
 import { CredentialService } from './credential.service';
+
+const uuidValue = uuid();
 
 const compareMock = jest.fn();
 const hashMock = jest.fn();
@@ -32,12 +35,12 @@ describe('CredentialService', () => {
     const { credential } = await credentialService.createCredential({
       email: 'test@test.com',
       password: 'passValid4',
-      userId: '123',
+      userId: uuidValue,
     });
     expect(credential).toBeDefined();
     expect(credential.email).toBe('test@test.com');
     expect(credential.passwordHashed).toBe('jfhdksjfdsjkfhdskjfhdsjkfhfh');
-    expect(credential.id).toBe('123');
+    expect(credential.id).toBe(uuidValue);
   });
 
   it('should not create a user credential with invalid email', async () => {
@@ -50,7 +53,7 @@ describe('CredentialService', () => {
       credentialService.createCredential({
         email: 't.com',
         password: 'passValid4',
-        userId: '123',
+        userId: uuidValue,
       })
     ).rejects.toThrowError(EntityValidationError);
   });
@@ -65,7 +68,7 @@ describe('CredentialService', () => {
       credentialService.createCredential({
         email: 'test@test.com',
         password: 'fd',
-        userId: '123',
+        userId: uuidValue,
       })
     ).rejects.toThrowError(EntityValidationError);
   });
@@ -81,7 +84,7 @@ describe('CredentialService', () => {
       {
         email: 'test@test.com',
         password: 'ffhfVff344d',
-        userId: '123',
+        userId: uuidValue,
       },
       hashServiceMock
     );
@@ -109,7 +112,7 @@ describe('CredentialService', () => {
       {
         email: 'test2@test.com',
         password: 'ffhfVff344d',
-        userId: '123',
+        userId: uuidValue,
       },
       hashServiceMock
     );
@@ -139,7 +142,7 @@ describe('CredentialService', () => {
       {
         email: 'test@test.com',
         password: 'ffhfVff344ffd',
-        userId: '123',
+        userId: uuidValue,
       },
       hashServiceMock
     );

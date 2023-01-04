@@ -27,6 +27,7 @@
         "class-methods-use-this": "off",
         "consistent-return": "off",
         "import/no-cycle": "off",
+        "max-classes-per-file": "off",
         "import/extensions": [
             "error",
             "ignorePackages",
