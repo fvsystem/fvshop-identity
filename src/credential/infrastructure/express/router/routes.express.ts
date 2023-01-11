@@ -42,6 +42,9 @@ export class RoutesExpressIdentity {
         });
         res.status(200).json(result);
       } catch (err) {
+        const { stack, message } = err as Error;
+        console.log(message);
+        console.log(stack);
         res.status(401).json(err);
       }
     });
@@ -54,7 +57,7 @@ export class RoutesExpressIdentity {
           password,
           userId,
         });
-        res.status(200).send();
+        res.status(201).send();
       } catch (err) {
         res.status(400).json(err);
       }

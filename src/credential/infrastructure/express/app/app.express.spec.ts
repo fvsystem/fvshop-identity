@@ -83,7 +83,7 @@ describe('App Express', () => {
         password: 'validHFH676fdf',
         userId: uuidValue,
       })
-      .expect(200);
+      .expect(201);
   });
 
   it('should not create credential to inexistent', async () => {

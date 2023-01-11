@@ -157,13 +157,13 @@ describe('VerifyCredentialUseCase', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should return 200 if register is valid', async () => {
+  it('should return 201 if register is valid', async () => {
     const response = await request(app).post('/register').send({
       email: 'test@test.com',
       password: 'validHFH676',
       userId: uuidValue,
     });
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
   });
 
   it('should return 400 if register data is not valid', async () => {
