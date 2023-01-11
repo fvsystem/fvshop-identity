@@ -9,8 +9,10 @@ export interface PasswordProps {
   password: string;
 }
 export class PasswordValueObject extends ValueObject<PasswordProps> {
-  private constructor(props: PasswordProps, hash: string) {
-    PasswordValueObject.validate(props);
+  private constructor(hash: string, props?: PasswordProps) {
+    if (props) {
+      PasswordValueObject.validate(props);
+    }
     super({ password: hash });
   }
 
@@ -19,7 +21,11 @@ export class PasswordValueObject extends ValueObject<PasswordProps> {
     hashService: HashServiceInterface
   ): Promise<PasswordValueObject> {
     const hash = await hashService.hash(props.password);
-    return new PasswordValueObject(props, hash);
+    return new PasswordValueObject(hash, props);
+  }
+
+  static createFromHash(hash: string): PasswordValueObject {
+    return new PasswordValueObject(hash);
   }
 
   static validate(props: PasswordProps) {

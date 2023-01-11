@@ -1,1 +1,2 @@
-export * from './adapter';
+export * from './sequelize';
+export * from './express';

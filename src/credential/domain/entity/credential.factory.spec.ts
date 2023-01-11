@@ -29,6 +29,18 @@ describe('CredentialUserFactory', () => {
     expect(userCredential.id).toBe(uuidValue);
   });
 
+  it('should create a valid user from DTO', () => {
+    const userCredential = CredentialFactory.createFromDTO({
+      email: 'test@test.com',
+      password: 'jfhdksjfdsjkfhdskjfhdsjkfhfh',
+      id: uuidValue,
+    });
+    expect(userCredential).toBeDefined();
+    expect(userCredential.email).toBe('test@test.com');
+    expect(userCredential.passwordHashed).toBe('jfhdksjfdsjkfhdskjfhdsjkfhfh');
+    expect(userCredential.id).toBe(uuidValue);
+  });
+
   it('should throw an error when email is invalid', async () => {
     hashMock.mockResolvedValue('jfhdksjfdsjkfhdskjfhdsjkfhfh');
     expect(

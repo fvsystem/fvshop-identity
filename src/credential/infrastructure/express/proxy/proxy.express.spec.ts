@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { CredentialFacadeImplRest } from './client.express';
+import { CredentialFacadeImplRest } from './proxy.express';
 
 jest.mock('axios');
 

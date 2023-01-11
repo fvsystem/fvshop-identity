@@ -3,7 +3,7 @@ import {
   UniqueEntityId,
 } from '@fvsystem/fvshop-shared-entities';
 import { PasswordValueObject } from '../value-object';
-import { CredentialEntity } from './credential.entity';
+import { CredentialDTO, CredentialEntity } from './credential.entity';
 
 export interface CreateCredentialUserInterface {
   email: string;
@@ -21,6 +21,12 @@ export class CredentialFactory {
       servicehash
     );
     const uniqueId = new UniqueEntityId(props.userId);
+    return new CredentialEntity({ password, email: props.email }, uniqueId);
+  }
+
+  static createFromDTO(props: CredentialDTO): CredentialEntity {
+    const password = PasswordValueObject.createFromHash(props.password);
+    const uniqueId = new UniqueEntityId(props.id);
     return new CredentialEntity({ password, email: props.email }, uniqueId);
   }
 }

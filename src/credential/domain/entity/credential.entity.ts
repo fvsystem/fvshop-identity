@@ -12,6 +12,12 @@ export interface CredentialProps {
   email: string;
 }
 
+export interface CredentialDTO {
+  password: string;
+  email: string;
+  id: string;
+}
+
 export class CredentialEntity extends Entity<CredentialProps> {
   public constructor(props: CredentialProps, id?: UniqueEntityId) {
     super(props, id);

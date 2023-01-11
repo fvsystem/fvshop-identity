@@ -49,12 +49,12 @@ export class RoutesExpressIdentity {
     router.post('/register', async (req, res) => {
       const { email, password, userId } = req.body;
       try {
-        const result = await credentailFacade.createCredential.execute({
+        await credentailFacade.createCredential.execute({
           email,
           password,
           userId,
         });
-        res.status(200).json(result);
+        res.status(200).send();
       } catch (err) {
         res.status(400).json(err);
       }

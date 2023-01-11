@@ -13,6 +13,8 @@
     "module": "commonjs",
     "rootDir": "./src",
     "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "declaration": true,
     "outDir": "./dist/esm",
     "baseUrl": "src",

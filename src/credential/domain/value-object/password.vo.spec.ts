@@ -24,6 +24,14 @@ describe('PasswordValueObject', () => {
     expect(password.passwordHashed).toBe('hashedPasswordLongEnoughtoBeValid');
   });
 
+  it('should create a password from hash', async () => {
+    const password = PasswordValueObject.createFromHash(
+      'hashedPasswordLongEnoughtoBeValid'
+    );
+    expect(password).toBeDefined();
+    expect(password.passwordHashed).toBe('hashedPasswordLongEnoughtoBeValid');
+  });
+
   it('should validate a password', async () => {
     hashMock.mockResolvedValue('hashedPasswordLongEnoughtoBeValid');
     expect(() =>
