@@ -1,10 +1,68 @@
 version: '3.8'
 
 services:
+
+  user-manager:
+    image: ghcr.io/fvsystem/fvshop-user-manager-express-sequelize:0.2.10
+    depends_on:
+      - postgres-user-manager
+    environment:
+      NODE_ENV: production
+    env_file:
+      - src/credential/infrastructure/userfacade/.env
+    networks:
+      - app_network
+    ports:
+      - '3001:3000'
+
   node:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.express-sequelize
+      secrets:
+        - github_token
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: production
+    env_file:
+      - .env
+    networks:
+      - app_network
+    ports:
+      - '3000:3000'
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: fvshop
+      POSTGRES_USER: ${DB_USERNAME}
+    env_file:
+      - .env
     volumes:
-      - ./:/home/node/app
-      - /app/node_modules
+      - ./database/entrypoint.sh:/docker-entrypoint-initdb.d/10_postgis.sh
+    networks:
+      - app_network
+    ports:
+      - '5432:5432'
+  postgres-user-manager:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: fvshop
+      POSTGRES_USER: ${DB_USERNAME}
+    env_file:
+      - src/credential/infrastructure/userfacade/.env
+    volumes:
+      - ./database/entrypoint.sh:/docker-entrypoint-initdb.d/10_postgis.sh
+    networks:
+      - app_network
+    ports:
+      - '5433:5432'
+networks:
+  app_network:
+    driver: bridge
+
+secrets:
+  github_token:
+    file: $HOME/.git/token

@@ -22,10 +22,11 @@
     "test": "jest",
     "prepublish": "npm run build",
     "build": "npm run build:esm && npm run build:cjs",
+    "start-express-sequelize": "node credential/infrastructure/app/express-sequelize",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs && tscpaths -p tsconfig.json -s ./src -o ./dist/cjs",
     "build:esm": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/esm",
     "commit": "cz",
-    "dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register src/credential/infrastructure/adapter/express/app' -e ts"
+    "dev": "nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register src/credential/infrastructure/app/express-sequelize' -e ts"
   },
   "repository": {
     "type": "git",

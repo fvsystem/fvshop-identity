@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  node:
-    user: node
-    volumes:
-      - ./.docker/zsh/powerlevel10k/.p10k.zsh:/home/node/.p10k.zsh:delegated
-      - ./.docker/zsh/history:/home/node/zsh:delegated
-      - ~/.gitconfig:/etc/gitconfig:delegated

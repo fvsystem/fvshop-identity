@@ -1,0 +1,42 @@
+FROM node:18.12.1-alpine AS builder
+
+WORKDIR /home/node/app
+
+COPY package* .
+
+RUN --mount=type=secret,id=github_token \
+    cat /run/secrets/github_token | sed 's/^/\/\/npm.pkg.github.com\/:_authToken=/' > npmrc.docker && \
+    mv npmrc.docker .npmrc && \
+    npm ci --ignore-scripts
+
+
+COPY . .
+
+
+RUN npm run build
+
+RUN rm -f .npmrc
+
+
+FROM node:18.12.1-alpine 
+
+WORKDIR /home/node/app
+
+ENV NODE_ENV=production
+
+COPY package* .
+RUN --mount=type=secret,id=github_token \
+    cat /run/secrets/github_token | sed 's/^/\/\/npm.pkg.github.com\/:_authToken=/' > npmrc.docker && \
+    mv npmrc.docker .npmrc && \
+    npm ci --ignore-scripts
+
+COPY --from=builder /home/node/app/dist/cjs .
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+RUN chmod +x /wait
+
+RUN rm -f .npmrc
+
+CMD /wait && npm run start-express-sequelize
+
+
