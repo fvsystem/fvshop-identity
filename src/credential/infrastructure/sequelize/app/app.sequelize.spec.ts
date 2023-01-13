@@ -22,11 +22,19 @@ describe('AppSequelize', () => {
     }));
     const config = {
       nodeEnv: 'test',
+      userFacade: {
+        domain: 'user-manager',
+        port: 50501,
+      },
+      domain: {
+        domain: 'localhost',
+      },
       db: {
         vendor: 'sqlite',
         host: ':memory:',
         logging: false,
       },
+      grpc: {},
       rest: {},
       jwt: {
         publicKey: 'publicKey',

@@ -10,28 +10,32 @@ import {
 import { UseCase } from '@fvsystem/fvshop-shared-entities';
 
 export class CreateCredentialUseCaseRest {
-  constructor(private readonly domain: string) {
+  constructor(private readonly domain: string, private readonly port: number) {
     this.domain = domain;
+    this.port = port;
   }
 
   async execute(
     input: CreateCredentialUseCaseInput
   ): Promise<CreateCredentialUseCaseOutput> {
-    const response = await axios.post(`${this.domain}/register`, input);
+    const response = await axios.post(
+      `http://${this.domain}:${this.port}/register`,
+      input
+    );
     return response.data;
   }
 }
 
 export class VerifyCredentialUseCaseRest {
-  constructor(private readonly domain: string) {
+  constructor(private readonly domain: string, private readonly port: number) {
     this.domain = domain;
+    this.port = port;
   }
 
   async execute(
     input: VerifyCredentialInputProps
   ): Promise<VerifyCredentialOutputProps> {
-    const response = await axios.post(`${this.domain}/login`, input);
-    return response.data;
+    throw new Error('This method is not intended to use among services');
   }
 }
 
@@ -46,8 +50,8 @@ export class CredentialFacadeImplRest implements CredentialFacade {
     VerifyCredentialOutputProps
   >;
 
-  constructor(domain: string) {
-    this.createCredential = new CreateCredentialUseCaseRest(domain);
-    this.verifyCredential = new VerifyCredentialUseCaseRest(domain);
+  constructor(domain: string, port: number) {
+    this.createCredential = new CreateCredentialUseCaseRest(domain, port);
+    this.verifyCredential = new VerifyCredentialUseCaseRest(domain, port);
   }
 }

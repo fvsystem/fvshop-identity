@@ -4,8 +4,13 @@ import { join } from 'path';
 import { z } from 'zod';
 
 const envSchema = z.object({
+  DOMAIN: z.string().default('localhost'),
+  USER_DOMAIN: z.string(),
+  USER_PORT: z.coerce.number(),
+  DOMAIN_PORT: z.coerce.number().optional(),
   REST_PORT: z.coerce.number().optional(),
   NODE_ENV: z.string(),
+  GRPC_PORT: z.coerce.number().optional(),
   DB_VENDOR: z.string(),
   DB_HOST: z.string(),
   DB_LOGGING: z.coerce.boolean(),
@@ -18,6 +23,16 @@ const envSchema = z.object({
 
 export type ConfigShared = {
   nodeEnv: string;
+  userFacade: {
+    domain: string;
+    port: number;
+  };
+  grpc: {
+    port?: number;
+  };
+  domain: {
+    domain: string;
+  };
   rest: {
     port?: number;
   };
@@ -42,15 +57,25 @@ export function makeConfigShared(envFile?: string): ConfigShared {
 
   return {
     nodeEnv: env.NODE_ENV,
+    userFacade: {
+      domain: env.USER_DOMAIN,
+      port: env.USER_PORT,
+    },
+    domain: {
+      domain: env.DOMAIN,
+    },
+    grpc: {
+      port: env.GRPC_PORT,
+    },
     rest: {
-      port: env.REST_PORT ? Number(env.REST_PORT) : undefined,
+      port: env.REST_PORT,
     },
     db: {
       vendor: env.DB_VENDOR,
       host: env.DB_HOST,
       logging: env.DB_LOGGING,
       password: env.DB_PASSWORD,
-      port: env.DB_PORT ? Number(env.DB_PORT) : undefined,
+      port: env.DB_PORT,
       username: env.DB_USERNAME,
     },
     jwt: {

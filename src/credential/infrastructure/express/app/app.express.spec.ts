@@ -74,26 +74,4 @@ describe('App Express', () => {
       .expect(401);
     expect(body).not.toHaveProperty('token');
   });
-
-  it('should create credential to user', async () => {
-    await request(app)
-      .post('/register')
-      .send({
-        email: 'test@test.com',
-        password: 'validHFH676fdf',
-        userId: uuidValue,
-      })
-      .expect(201);
-  });
-
-  it('should not create credential to inexistent', async () => {
-    await request(app)
-      .post('/register')
-      .send({
-        email: 'noCredential',
-        password: 'validHFH676fdf',
-        userId: 'noCredential',
-      })
-      .expect(400);
-  });
 });

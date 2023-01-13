@@ -24,7 +24,9 @@ const logger = new LoggerServiceWinton();
     CredentialMapper.mapToEntity,
     CredentialMapper.mapToModel
   );
-  const userFacade = new UserFacadeProxyExpress('user-manager:3000');
+  const userFacade = new UserFacadeProxyExpress(
+    `http://${config.userFacade.domain}:${config.userFacade.port}`
+  );
   const hashService = new HashServiceBCryptJS(10);
   const jwtService = new JWTServiceJsonWebToken<{
     email: string;

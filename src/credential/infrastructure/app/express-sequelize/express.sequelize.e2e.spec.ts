@@ -4,6 +4,7 @@ import {
   JWTServiceJsonWebToken,
 } from '@fvsystem/fvshop-shared-entities';
 import { UserFacadeProxyExpress } from '@fvsystem/fvshop-user-manager';
+import { CreateCredentialUseCase } from '@root/credential/application';
 import request from 'supertest';
 import { v4 as uuid } from 'uuid';
 import { getConfigTest } from '../../config';
@@ -89,14 +90,18 @@ describe('ExpressSequelize', () => {
       hashService,
       jwtService
     );
-    await request(app)
-      .post('/register')
-      .send({
-        email: 'test@test.com',
-        password: 'validPassw0rd',
-        userId: uuidValue,
-      })
-      .expect(201);
+
+    const createCredentialUseCase = new CreateCredentialUseCase(
+      credentialRepository,
+      hashService,
+      jwtService
+    );
+
+    await createCredentialUseCase.execute({
+      email: 'test@test.com',
+      password: 'validPassw0rd',
+      userId: uuidValue,
+    });
 
     const response = await request(app)
       .post('/login')
@@ -114,14 +119,5 @@ describe('ExpressSequelize', () => {
         password: 'validPassw0rda',
       })
       .expect(401);
-
-    await request(app)
-      .post('/register')
-      .send({
-        email: 'test@test.com',
-        password: 'validPassw0rd',
-        userId: 'inexistent',
-      })
-      .expect(400);
   });
 });

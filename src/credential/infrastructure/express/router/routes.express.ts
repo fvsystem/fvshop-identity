@@ -42,24 +42,7 @@ export class RoutesExpressIdentity {
         });
         res.status(200).json(result);
       } catch (err) {
-        const { stack, message } = err as Error;
-        console.log(message);
-        console.log(stack);
         res.status(401).json(err);
-      }
-    });
-
-    router.post('/register', async (req, res) => {
-      const { email, password, userId } = req.body;
-      try {
-        await credentailFacade.createCredential.execute({
-          email,
-          password,
-          userId,
-        });
-        res.status(201).send();
-      } catch (err) {
-        res.status(400).json(err);
       }
     });
   }
