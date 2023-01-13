@@ -41,16 +41,12 @@ describe('CreateCredentialUseCase', () => {
       hashMock,
       jwtServiceMock
     );
-    const { credential: credentialReturned } =
+    expect(async () => {
       await createCredentialUseCase.execute({
         email: 'test@test.com',
         password: 'validHFH676',
         userId: uuidValue,
       });
-    expect(credentialReturned.id).toBe(uuidValue);
-    expect(credentialReturned.email).toBe('test@test.com');
-    expect(credentialReturned.passwordHashed).toBe(
-      'jfhdksjfdsjkfhdskjfhdsjkfhfh'
-    );
+    }).not.toThrow();
   });
 });

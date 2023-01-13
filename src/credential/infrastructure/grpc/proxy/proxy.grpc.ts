@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import {
   CreateCredentialUseCaseInput,
   CreateCredentialUseCaseOutput,
@@ -7,27 +5,24 @@ import {
   VerifyCredentialInputProps,
   VerifyCredentialOutputProps,
 } from '@root/credential/application';
+import { promisify } from 'util';
 import { UseCase } from '@fvsystem/fvshop-shared-entities';
+import { RegisterClient } from '../proto';
 
-export class CreateCredentialUseCaseRest {
-  constructor(private readonly domain: string, private readonly port: number) {
-    this.domain = domain;
-    this.port = port;
+export class CreateCredentialUseCaseGrpc {
+  constructor(private readonly client: RegisterClient) {
+    this.client = client;
   }
 
   async execute(
     input: CreateCredentialUseCaseInput
   ): Promise<CreateCredentialUseCaseOutput> {
-    await axios.post(`http://${this.domain}:${this.port}/register`, input);
+    const register = promisify(this.client.register.bind(this.client));
+    await register(input);
   }
 }
 
-export class VerifyCredentialUseCaseRest {
-  constructor(private readonly domain: string, private readonly port: number) {
-    this.domain = domain;
-    this.port = port;
-  }
-
+export class VerifyCredentialUseCaseGrpc {
   async execute(
     input: VerifyCredentialInputProps
   ): Promise<VerifyCredentialOutputProps> {
@@ -35,7 +30,7 @@ export class VerifyCredentialUseCaseRest {
   }
 }
 
-export class CredentialFacadeImplRest implements CredentialFacade {
+export class CredentialFacadeImplGrpc implements CredentialFacade {
   createCredential: UseCase<
     CreateCredentialUseCaseInput,
     CreateCredentialUseCaseOutput
@@ -46,8 +41,8 @@ export class CredentialFacadeImplRest implements CredentialFacade {
     VerifyCredentialOutputProps
   >;
 
-  constructor(domain: string, port: number) {
-    this.createCredential = new CreateCredentialUseCaseRest(domain, port);
-    this.verifyCredential = new VerifyCredentialUseCaseRest(domain, port);
+  constructor(client: RegisterClient) {
+    this.createCredential = new CreateCredentialUseCaseGrpc(client);
+    this.verifyCredential = new VerifyCredentialUseCaseGrpc();
   }
 }

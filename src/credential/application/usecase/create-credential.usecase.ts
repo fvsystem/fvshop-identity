@@ -4,7 +4,6 @@ import {
   UseCase,
 } from '@fvsystem/fvshop-shared-entities';
 import {
-  CredentialEntity,
   CredentialRepositoryInterface,
   CredentialService,
 } from '@root/credential/domain';
@@ -15,9 +14,8 @@ export interface CreateCredentialUseCaseInput {
   userId: string;
 }
 
-export interface CreateCredentialUseCaseOutput {
-  credential: CredentialEntity;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export type CreateCredentialUseCaseOutput = void;
 
 export class CreateCredentialUseCase
   implements
@@ -42,6 +40,5 @@ export class CreateCredentialUseCase
   ): Promise<CreateCredentialUseCaseOutput> {
     const { credential } = await this.credentialService.createCredential(input);
     await this.credentialRepository.insert(credential);
-    return { credential };
   }
 }
