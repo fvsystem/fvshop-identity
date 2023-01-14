@@ -1,3 +1,6 @@
+import * as grpc from '@grpc/grpc-js';
+import { loadSync } from '@grpc/proto-loader';
+import { resolve } from 'node:path';
 import {
   CreateCredentialUseCaseInput,
   CreateCredentialUseCaseOutput,
@@ -7,7 +10,7 @@ import {
 } from '@root/credential/application';
 import { promisify } from 'util';
 import { UseCase } from '@fvsystem/fvshop-shared-entities';
-import { RegisterClient } from '../proto';
+import { ProtoGrpcType, RegisterClient } from '../proto';
 
 export class CreateCredentialUseCaseGrpc {
   constructor(private readonly client: RegisterClient) {
@@ -41,7 +44,21 @@ export class CredentialFacadeImplGrpc implements CredentialFacade {
     VerifyCredentialOutputProps
   >;
 
-  constructor(client: RegisterClient) {
+  constructor(domain: string, port: number) {
+    const protoPath = resolve(__dirname, '../proto/credential.proto');
+    const packageDefinition = loadSync(protoPath, {
+      keepCase: true,
+      defaults: true,
+      oneofs: true,
+    });
+    const protoDescriptor = grpc.loadPackageDefinition(
+      packageDefinition
+    ) as unknown as ProtoGrpcType;
+
+    const client = new protoDescriptor.Register(
+      `${domain}:${port}`,
+      grpc.credentials.createInsecure()
+    );
     this.createCredential = new CreateCredentialUseCaseGrpc(client);
     this.verifyCredential = new VerifyCredentialUseCaseGrpc();
   }

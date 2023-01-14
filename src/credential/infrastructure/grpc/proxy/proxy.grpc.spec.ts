@@ -1,4 +1,3 @@
-import { RegisterClient } from '../proto';
 import { CredentialFacadeImplGrpc } from './proxy.grpc';
 
 const client = {
@@ -15,11 +14,22 @@ const client = {
   makeBidiStreamRequest: jest.fn(),
 };
 
+jest.mock('@grpc/proto-loader', () => ({
+  loadSync: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('@grpc/grpc-js', () => ({
+  credentials: {
+    createInsecure: jest.fn(),
+  },
+  loadPackageDefinition: jest.fn().mockReturnValue({
+    Register: jest.fn().mockImplementation(() => client),
+  }),
+}));
+
 describe('GrpcProxy', () => {
   it('should call register service', () => {
-    const proxy = new CredentialFacadeImplGrpc(
-      client as unknown as RegisterClient
-    );
+    const proxy = new CredentialFacadeImplGrpc('localhost', 50051);
     proxy.createCredential.execute({
       email: 'test@test.com',
       password: 'validHFH676',
@@ -29,9 +39,7 @@ describe('GrpcProxy', () => {
   });
 
   it('should throw an error when trying to login', async () => {
-    const proxy = new CredentialFacadeImplGrpc(
-      client as unknown as RegisterClient
-    );
+    const proxy = new CredentialFacadeImplGrpc('localhost', 50051);
     await expect(() =>
       proxy.verifyCredential.execute({
         email: 'test@test.com',
