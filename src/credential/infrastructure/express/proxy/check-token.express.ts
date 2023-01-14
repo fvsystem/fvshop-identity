@@ -21,10 +21,8 @@ export function checkTokenExpress(
     try {
       const result = await checkTokenService.checkToken(token, rolesAccepted);
 
-      if (!result) {
-        res.status(401).send('Unauthorized');
-        return;
-      }
+      req.user = result;
+
       next();
     } catch (e) {
       res.status(401).send('Unauthorized');

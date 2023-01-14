@@ -9,12 +9,23 @@ export class CheckTokenService {
     }>
   ) {}
 
-  async checkToken(token: string, rolesAccepted: string[]): Promise<boolean> {
+  async checkToken(
+    token: string,
+    rolesAccepted: string[]
+  ): Promise<{ id: string; email: string; roles: string[] }> {
     const payload = await this.jwtService.verify(token, {});
     const result = rolesAccepted.reduce(
       (acc, role) => acc || payload.scope.includes(role),
       false
     );
-    return result;
+
+    if (!result) {
+      throw new Error('Unauthorized');
+    }
+    return {
+      id: payload.userId,
+      email: payload.email,
+      roles: payload.scope,
+    };
   }
 }
