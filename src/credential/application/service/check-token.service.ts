@@ -13,7 +13,7 @@ export class CheckTokenService {
     token: string,
     rolesAccepted: string[]
   ): Promise<{ id: string; email: string; roles: string[] }> {
-    const payload = await this.jwtService.verify(token, {});
+    const payload = await this.jwtService.verify(token);
     const result = rolesAccepted.reduce(
       (acc, role) => acc || payload.scope.includes(role),
       false
