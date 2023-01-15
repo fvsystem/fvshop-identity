@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import express, { Router } from 'express';
 import request from 'supertest';
 import { RoutesExpressIdentity } from './routes.express';
+import { getUserFacade } from '../../testing';
 
 const uuidValue = uuid();
 const userData = {
@@ -37,25 +38,7 @@ const jwtServiceMock = {
   }),
 };
 
-const userFacadeMock = {
-  getUserById: {
-    execute: jest.fn().mockImplementation(({ id }) => {
-      if (id === uuidValue) {
-        return Promise.resolve({ user: userData });
-      }
-      return Promise.reject(new NotFoundError('User not found'));
-    }),
-  },
-
-  getUserByEmail: {
-    execute: jest.fn().mockImplementation(({ email }) => {
-      if (email === 'test@test.com') {
-        return Promise.resolve({ user: userData });
-      }
-      return Promise.reject(new NotFoundError('User not found'));
-    }),
-  },
-};
+const userFacadeMock = getUserFacade(uuidValue, userData);
 
 const hashMock = {
   compare: jest.fn().mockImplementation((password, hash) => {

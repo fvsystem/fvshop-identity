@@ -6,7 +6,8 @@ import { z } from 'zod';
 const envSchema = z.object({
   DOMAIN: z.string().default('localhost'),
   USER_DOMAIN: z.string(),
-  USER_PORT: z.coerce.number(),
+  USER_REST_PORT: z.coerce.number(),
+  USER_GRPC_PORT: z.coerce.number(),
   DOMAIN_PORT: z.coerce.number().optional(),
   REST_PORT: z.coerce.number().optional(),
   NODE_ENV: z.string(),
@@ -25,7 +26,12 @@ export type ConfigShared = {
   nodeEnv: string;
   userFacade: {
     domain: string;
-    port: number;
+    rest: {
+      port: number;
+    };
+    grpc: {
+      port: number;
+    };
   };
   grpc: {
     port?: number;
@@ -59,7 +65,12 @@ export function makeConfigShared(envFile?: string): ConfigShared {
     nodeEnv: env.NODE_ENV,
     userFacade: {
       domain: env.USER_DOMAIN,
-      port: env.USER_PORT,
+      rest: {
+        port: env.USER_REST_PORT,
+      },
+      grpc: {
+        port: env.USER_GRPC_PORT,
+      },
     },
     domain: {
       domain: env.DOMAIN,
@@ -84,8 +95,6 @@ export function makeConfigShared(envFile?: string): ConfigShared {
     },
   };
 }
-
-// export const config = makeConfig(envFile);
 
 export function getConfigTest(): ConfigShared {
   const envTestingFile = join(process.cwd(), '.env.test');

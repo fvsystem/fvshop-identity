@@ -3,7 +3,7 @@ import {
   HashServiceBCryptJS,
   JWTServiceJsonWebToken,
 } from '@fvsystem/fvshop-shared-entities';
-import { UserFacadeProxyExpress } from '@fvsystem/fvshop-user-manager';
+import { UserFacadeProxyGrpc } from '@fvsystem/fvshop-user-manager';
 import { CreateCredentialUseCase } from '@root/credential/application';
 import request from 'supertest';
 import { v4 as uuid } from 'uuid';
@@ -20,44 +20,48 @@ const config = getConfigTest();
 
 const uuidValue = uuid();
 
-jest.mock('axios', () => ({
-  get: jest.fn().mockImplementation(async (path: string, values: unknown) => {
-    if (!path.includes('mail')) {
-      const id = path.split('/').pop();
+jest.mock('@grpc/proto-loader', () => ({
+  loadSync: jest.fn().mockReturnValue({}),
+}));
 
-      if (id !== uuidValue) {
-        throw new Error('User not found');
-      }
-      return {
-        data: {
-          user: {
-            id,
-            email: 'test@test.com',
-            roles: ['user'],
-            firstName: 'John',
-            lastName: 'Doe',
-            fullName: 'John Doe',
-          },
-        },
-      };
-    }
-    if (path.includes('mail')) {
-      const {
-        params: { email },
-      } = values as { params: { email: string } };
-      return {
-        data: {
-          user: {
-            id: uuidValue,
-            email,
-            roles: ['user'],
-            firstName: 'John',
-            lastName: 'Doe',
-            fullName: 'John Doe',
-          },
-        },
-      };
-    }
+jest.mock('@grpc/grpc-js', () => ({
+  credentials: {
+    createInsecure: jest.fn(),
+  },
+  loadPackageDefinition: jest.fn().mockReturnValue({
+    GetByEmail: jest.fn().mockReturnValue({
+      GetByEmail: {
+        bind: jest.fn().mockReturnValue(
+          jest
+            .fn()
+            .mockImplementation(
+              ({ email }: { email: string }, callback: any) => {
+                callback(null, {
+                  user: {
+                    id: uuidValue,
+                    email,
+                    roles: ['admin'],
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    fullName: 'John Doe',
+                  },
+                });
+              }
+            )
+        ),
+      },
+    }),
+
+    CreateUser: jest.fn().mockReturnValue({
+      CreateUser: jest.fn(),
+    }),
+
+    GetById: jest.fn().mockReturnValue({
+      GetById: jest.fn(),
+    }),
+    GetAllUsers: jest.fn().mockReturnValue({
+      GetAllUsers: jest.fn(),
+    }),
   }),
 }));
 
@@ -78,7 +82,7 @@ describe('ExpressSequelize', () => {
       privateKey: config.jwt.privateKey,
       publicKey: config.jwt.publicKey,
     });
-    const userFacade = new UserFacadeProxyExpress('user-manager');
+    const userFacade = new UserFacadeProxyGrpc('user-manager', 50051);
     const credentialRepository = new CredentialRepositorySequelize(
       CredentialModel,
       CredentialMapper.mapToEntity,

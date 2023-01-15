@@ -21,5 +21,11 @@ export function getUserFacade(uuidValue: string, userData: UserDataDTO) {
         return Promise.reject(new NotFoundError('User not found'));
       }),
     },
+    createUser: {
+      execute: jest.fn(),
+    },
+    getAllUsers: {
+      execute: jest.fn(),
+    },
   };
 }

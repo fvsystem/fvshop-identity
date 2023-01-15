@@ -24,7 +24,12 @@ describe('AppSequelize', () => {
       nodeEnv: 'test',
       userFacade: {
         domain: 'user-manager',
-        port: 50501,
+        grpc: {
+          port: 50051,
+        },
+        rest: {
+          port: 3000,
+        },
       },
       domain: {
         domain: 'localhost',
