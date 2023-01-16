@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import * as grpc from '@grpc/grpc-js';
 import {
   HashServiceBCryptJS,
   JWTServiceJsonWebToken,
@@ -6,19 +7,18 @@ import {
 } from '@fvsystem/fvshop-shared-entities';
 import { UserFacadeProxyGrpc } from '@fvsystem/fvshop-user-manager';
 import { makeConfigShared } from '../../config';
-import { getAppExpress } from '../../express';
+import { getAppGrpc } from '../../grpc';
 import {
   CredentialMapper,
   CredentialModel,
   CredentialRepositorySequelize,
-  getAppSequelize,
 } from '../../sequelize';
 
 const logger = new LoggerServiceWinton();
 // init server
 (async () => {
   const config = makeConfigShared();
-  await getAppSequelize(config);
+  // await getAppSequelize(config);
   const credentialRepository = new CredentialRepositorySequelize(
     CredentialModel,
     CredentialMapper.mapToEntity,
@@ -39,13 +39,24 @@ const logger = new LoggerServiceWinton();
     privateKey: config.jwt.privateKey,
     publicKey: config.jwt.publicKey,
   });
-  const app = getAppExpress(
+  const app = getAppGrpc(
     credentialRepository,
-    userFacade,
     hashService,
-    jwtService
+    jwtService,
+    userFacade
   );
-  app.listen(config.rest.port || 3000, () => {
-    logger.info(`Server running on port ${config.rest.port || 3000}`);
-  });
+  const { server } = app;
+
+  server.bindAsync(
+    `0.0.0.0:${config.grpc.port}`,
+    grpc.ServerCredentials.createInsecure(),
+    (err, port) => {
+      if (err) {
+        logger.error(err);
+        process.exit(1);
+      }
+      server.start();
+      logger.info(`Server running on port ${port}`);
+    }
+  );
 })();

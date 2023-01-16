@@ -44,7 +44,7 @@ export class ServerGrpc {
 
   public getClient(domain: string, port: number): RegisterClient {
     const client = new this.packageDefinition.Register(
-      `${domain}:${port}`,
+      `0.0.0.0:${port}`,
       grpc.credentials.createInsecure()
     );
 
