@@ -34,8 +34,12 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
 	CONSTRAINT "roles-users_pkey" PRIMARY KEY (user_id, role_id)
     );
 
-    ALTER TABLE public."roles-users" ADD CONSTRAINT IF NOT EXISTS "roles-users_role_id_fkey" FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE ON UPDATE CASCADE;
-    ALTER TABLE public."roles-users" ADD CONSTRAINT IF NOT EXISTS "roles-users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE ON UPDATE CASCADE;
+    ALTER TABLE public."roles-users" DROP CONSTRAINT IF EXISTS "roles-users_role_id_fkey"  ;
+    ALTER TABLE public."roles-users" DROP CONSTRAINT IF EXISTS "roles-users_user_id_fkey" ;
+
+
+    ALTER TABLE public."roles-users" ADD CONSTRAINT "roles-users_role_id_fkey" FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE ON UPDATE CASCADE;
+    ALTER TABLE public."roles-users" ADD CONSTRAINT "roles-users_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
     INSERT INTO public.users
     (id, email, first_name, last_name, "createdAt", "updatedAt")
@@ -48,4 +52,5 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     INSERT INTO public."roles-users"
     (user_id, role_id, "createdAt", "updatedAt")
     VALUES('cc33bcf8-e662-4024-8fb4-02e1e7dacdba'::uuid, 'f7a58b05-c706-49e9-b901-1e81b5c72d2c'::uuid, '2023-01-06 23:28:29.194', '2023-01-06 23:28:29.194') ON CONFLICt DO NOTHING;
+
 EOSQL

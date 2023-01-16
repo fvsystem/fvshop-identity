@@ -2,12 +2,13 @@ version: '3.8'
 
 services:
 
-  user-manager:
-    image: ghcr.io/fvsystem/fvshop-user-manager-express-sequelize:0.2.10
+  user-manager-rest:
+    image: ghcr.io/fvsystem/fvshop-user-manager-express-sequelize:0.2.13
     depends_on:
       - postgres-user-manager
     environment:
       NODE_ENV: production
+      WAIT_HOSTS: postgres-user-manager:5432
     env_file:
       - src/credential/infrastructure/userfacade/.env
     networks:
@@ -15,7 +16,21 @@ services:
     ports:
       - '3001:3000'
 
-  node:
+  user-manager:
+    image: ghcr.io/fvsystem/fvshop-user-manager-grpc-sequelize:0.2.13
+    depends_on:
+      - postgres-user-manager
+    environment:
+      NODE_ENV: production
+      WAIT_HOSTS: postgres-user-manager:5432
+    env_file:
+      - src/credential/infrastructure/userfacade/.env
+    networks:
+      - app_network
+    ports:
+      - '50052:50051'
+
+  credential-rest:
     build:
       context: .
       dockerfile: Dockerfile.express-sequelize
@@ -25,12 +40,31 @@ services:
       - postgres
     environment:
       NODE_ENV: production
+      WAIT_HOSTS: postgres:5432
     env_file:
       - .env
     networks:
       - app_network
     ports:
       - '3000:3000'
+  
+  credential:
+    build:
+      context: .
+      dockerfile: Dockerfile.grpc-sequelize
+      secrets:
+        - github_token
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: production
+      WAIT_HOSTS: postgres:5432
+    env_file:
+      - .env
+    networks:
+      - app_network
+    ports:
+      - '50051:50051'
   postgres:
     image: postgres
     environment:
