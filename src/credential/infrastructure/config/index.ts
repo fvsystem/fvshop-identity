@@ -57,7 +57,7 @@ export type ConfigShared = {
 };
 
 export function makeConfigShared(envFile?: string): ConfigShared {
-  readEnv({ path: envFile, override: true });
+  readEnv({ path: envFile, override: process.env.NODE_ENV === 'development' });
 
   const env = envSchema.parse(process.env);
 
