@@ -33,6 +33,10 @@ export class RoutesExpressIdentity {
       this._userFacade
     );
 
+    router.get('/health', async (req, res) => {
+      res.status(200).json({ status: 'OK' });
+    });
+
     router.post('/login', async (req, res) => {
       const { email, password } = req.body;
       try {
@@ -42,7 +46,6 @@ export class RoutesExpressIdentity {
         });
         res.status(200).json(result);
       } catch (err) {
-        console.log(err);
         res.status(401).json(err);
       }
     });

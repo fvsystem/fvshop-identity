@@ -133,6 +133,11 @@ describe('VerifyCredentialUseCase', () => {
     expect(response.status).toBe(200);
   });
 
+  it('should get health', async () => {
+    const response = await request(app).get('/health').send();
+    expect(response.status).toBe(200);
+  });
+
   it('should return 401 if login is not valid', async () => {
     const response = await request(app)
       .post('/login')
