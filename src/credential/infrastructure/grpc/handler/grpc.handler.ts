@@ -10,7 +10,13 @@ import {
   CreateCredentialUseCaseOutput,
 } from '@root/credential/application';
 import { CredentialRepositoryInterface } from '@root/credential/domain';
+import { HealthHandlers } from '../proto';
 import { RegisterHandlers } from '../proto/Register';
+
+export interface Handlers {
+  Health: HealthHandlers;
+  Register: RegisterHandlers;
+}
 
 export function getHandlers(
   credentialRepository: CredentialRepositoryInterface,
@@ -21,7 +27,7 @@ export function getHandlers(
     scope: string[];
   }>,
   userFacade: UserFacadeInterface
-): RegisterHandlers {
+): Handlers {
   const registerService = new CredentialFacadeImpl(
     credentialRepository,
     hashService,
@@ -30,16 +36,27 @@ export function getHandlers(
   );
 
   return {
-    Register: (call, callback) => {
-      const { email, password, userId } = call.request;
-      const input: CreateCredentialUseCaseInput = { email, password, userId };
-      (
-        registerService.createCredential.execute as (
-          inputProps: CreateCredentialUseCaseInput
-        ) => Promise<CreateCredentialUseCaseOutput>
-      )(input)
-        .then(() => callback(null))
-        .catch((error) => callback(error));
+    Health: {
+      Check: (call, callback) => {
+        callback(null, { status: 'SERVING' });
+      },
+      Watch: (call) => {
+        call.write({ status: 'SERVING' });
+        call.end();
+      },
+    },
+    Register: {
+      Register: (call, callback) => {
+        const { email, password, userId } = call.request;
+        const input: CreateCredentialUseCaseInput = { email, password, userId };
+        (
+          registerService.createCredential.execute as (
+            inputProps: CreateCredentialUseCaseInput
+          ) => Promise<CreateCredentialUseCaseOutput>
+        )(input)
+          .then(() => callback(null))
+          .catch((error) => callback(error));
+      },
     },
   };
 }

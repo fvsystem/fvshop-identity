@@ -9,10 +9,11 @@ import {
 } from '@root/credential/domain';
 import { getJWTServiceMock, getUserFacade, hashMock } from '../../testing';
 import { getAppGrpc, ServerGrpc } from './grpc.app';
-import { RegisterClient } from '../proto';
+import { HealthClient, RegisterClient } from '../proto';
 
 let app: ServerGrpc;
 let client: RegisterClient;
+let health: HealthClient;
 
 const uuidValue = uuid();
 
@@ -73,11 +74,14 @@ describe('App Express', () => {
       );
     });
 
-    client = app.getClient('localhost', address);
+    const clients = app.getClient(address);
+    health = clients.Health;
+    client = clients.Register;
   });
 
   afterAll(async () => {
     client.close();
+    health.close();
     const sleep = promisify(setTimeout);
     await sleep(6000);
     const finish = promisify(app.server.tryShutdown.bind(app.server));
@@ -85,6 +89,9 @@ describe('App Express', () => {
   });
 
   it('should register credential', async () => {
+    const checkHealth = promisify(health.Check.bind(health));
+
+    await expect(checkHealth({})).resolves.toEqual({ status: 1 });
     const register = promisify(client.Register.bind(client));
 
     await expect(

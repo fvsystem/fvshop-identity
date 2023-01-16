@@ -9,9 +9,8 @@ import {
 } from '@fvsystem/fvshop-shared-entities';
 import UserFacadeInterface from '@fvsystem/fvshop-user-manager';
 import { ProtoGrpcType } from '../proto/credential';
-import { RegisterHandlers } from '../proto/Register';
-import { getHandlers } from '../handler/grpc.handler';
-import { RegisterClient } from '../proto';
+import { getHandlers, Handlers } from '../handler/grpc.handler';
+import { HealthClient, RegisterClient } from '../proto';
 
 const protoPath = resolve(__dirname, '../proto/credential.proto');
 
@@ -20,18 +19,17 @@ export class ServerGrpc {
 
   private readonly _server: grpc.Server;
 
-  constructor(
-    packageDefinition: ProtoGrpcType,
-    handlers: Map<keyof ProtoGrpcType, RegisterHandlers>
-  ) {
+  constructor(packageDefinition: ProtoGrpcType, handlers: Handlers) {
     this._packageDefinition = packageDefinition;
     this._server = new grpc.Server();
-    for (const [key, value] of handlers) {
-      this._server.addService(
-        (this._packageDefinition[key] as any).service,
-        value
-      );
-    }
+    this._server.addService(
+      this._packageDefinition.Health.service,
+      handlers.Health
+    );
+    this._server.addService(
+      this._packageDefinition.Register.service,
+      handlers.Register
+    );
   }
 
   get server(): grpc.Server {
@@ -42,13 +40,21 @@ export class ServerGrpc {
     return this._packageDefinition;
   }
 
-  public getClient(domain: string, port: number): RegisterClient {
-    const client = new this.packageDefinition.Register(
+  public getClient(port: number): {
+    Register: RegisterClient;
+    Health: HealthClient;
+  } {
+    const Register = new this.packageDefinition.Register(
       `0.0.0.0:${port}`,
       grpc.credentials.createInsecure()
     );
 
-    return client;
+    const Health = new this.packageDefinition.Health(
+      `0.0.0.0:${port}`,
+      grpc.credentials.createInsecure()
+    );
+
+    return { Register, Health };
   }
 }
 
@@ -79,13 +85,10 @@ export function getAppGrpc(
     userFacade
   );
 
-  const server = new ServerGrpc(
-    protoDescriptor,
-    new Map<keyof ProtoGrpcType, RegisterHandlers>().set(
-      'Register',
-      serviceRegister
-    )
-  );
+  const server = new ServerGrpc(protoDescriptor, {
+    Health: serviceRegister.Health,
+    Register: serviceRegister.Register,
+  });
 
   return server;
 }

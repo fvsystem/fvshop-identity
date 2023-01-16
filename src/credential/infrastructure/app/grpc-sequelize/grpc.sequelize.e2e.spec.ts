@@ -89,7 +89,9 @@ describe('ExpressSequelize', () => {
       );
     });
 
-    const client = app.getClient('localhost', address);
+    const clients = app.getClient(address);
+
+    const client = clients.Register;
 
     const register = promisify(client.Register.bind(client));
 
