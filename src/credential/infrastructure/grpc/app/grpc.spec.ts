@@ -9,7 +9,8 @@ import {
 } from '@root/credential/domain';
 import { getJWTServiceMock, getUserFacade, hashMock } from '../../testing';
 import { getAppGrpc, ServerGrpc } from './grpc.app';
-import { HealthClient, RegisterClient } from '../proto';
+import { RegisterClient } from '../proto';
+import { HealthClient } from '../proto/grpc/health/v1/Health';
 
 let app: ServerGrpc;
 let client: RegisterClient;

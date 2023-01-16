@@ -10,7 +10,7 @@ import {
   CreateCredentialUseCaseOutput,
 } from '@root/credential/application';
 import { CredentialRepositoryInterface } from '@root/credential/domain';
-import { HealthHandlers } from '../proto';
+import { HealthHandlers } from '../proto/grpc/health/v1/Health';
 import { RegisterHandlers } from '../proto/Register';
 
 export interface Handlers {

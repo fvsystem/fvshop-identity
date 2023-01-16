@@ -37,6 +37,8 @@ RUN chmod +x /wait
 
 RUN rm -f .npmrc
 
+RUN apk add grpc-health-check --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+
 CMD /wait && npm run start-grpc-sequelize
 
 

@@ -10,7 +10,8 @@ import {
 import UserFacadeInterface from '@fvsystem/fvshop-user-manager';
 import { ProtoGrpcType } from '../proto/credential';
 import { getHandlers, Handlers } from '../handler/grpc.handler';
-import { HealthClient, RegisterClient } from '../proto';
+import { RegisterClient } from '../proto';
+import { HealthClient } from '../proto/grpc/health/v1/Health';
 
 const protoPath = resolve(__dirname, '../proto/credential.proto');
 
@@ -23,7 +24,7 @@ export class ServerGrpc {
     this._packageDefinition = packageDefinition;
     this._server = new grpc.Server();
     this._server.addService(
-      this._packageDefinition.Health.service,
+      this._packageDefinition.grpc.health.v1.Health.service,
       handlers.Health
     );
     this._server.addService(
@@ -49,7 +50,7 @@ export class ServerGrpc {
       grpc.credentials.createInsecure()
     );
 
-    const Health = new this.packageDefinition.Health(
+    const Health = new this.packageDefinition.grpc.health.v1.Health(
       `0.0.0.0:${port}`,
       grpc.credentials.createInsecure()
     );
