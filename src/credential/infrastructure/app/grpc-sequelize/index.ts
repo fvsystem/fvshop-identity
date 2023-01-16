@@ -12,13 +12,14 @@ import {
   CredentialMapper,
   CredentialModel,
   CredentialRepositorySequelize,
+  getAppSequelize,
 } from '../../sequelize';
 
 const logger = new LoggerServiceWinton();
 // init server
 (async () => {
   const config = makeConfigShared();
-  // await getAppSequelize(config);
+  await getAppSequelize(config);
   const credentialRepository = new CredentialRepositorySequelize(
     CredentialModel,
     CredentialMapper.mapToEntity,
