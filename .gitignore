@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+key.private
+key.public
+
 .history/
 .docker/zsh/history/.zsh_history
 .docker/dbdata
