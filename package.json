@@ -1,6 +1,6 @@
 {
   "name": "@fvsystem/fvshop-identity",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Credential manager for FVShop",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
